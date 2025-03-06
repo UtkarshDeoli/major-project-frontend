@@ -30,7 +30,7 @@ export default function Home() {
     formData.append("file", file)
 
     try {
-      const response = await fetch("http://localhost:8001/process-pdf", {
+      const response = await fetch("https://phadaibk.utkarshdeoli.in/process-pdf", {
         method: "POST",
         body: formData,
       })

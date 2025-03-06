@@ -44,7 +44,7 @@ export default function ChatPage() {
     setMessages((prevMessages) => [...prevMessages, assistantMessage]);
 
     try {
-      const response = await fetch("http://localhost:8001/ask-question/stream", {
+      const response = await fetch("https://phadaibk.utkarshdeoli.in/ask-question/stream", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
