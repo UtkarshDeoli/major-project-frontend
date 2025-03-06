@@ -11,10 +11,10 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const searchParams = useSearchParams();
   const filename = searchParams.get("filename");
@@ -29,7 +29,7 @@ export default function ChatPage() {
     }
   }, [messages]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
     if (!input.trim()) return;
 
@@ -52,6 +52,9 @@ export default function ChatPage() {
         body: JSON.stringify({ question: input }),
       });
 
+      if (!response.body) {
+        throw new Error("Response body is null");
+      }
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
