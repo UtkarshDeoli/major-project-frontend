@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import { Send, Bot, User, ArrowLeft, FileText, Loader } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-export default function ChatPage() {
+function ChatScreen() {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +29,7 @@ export default function ChatPage() {
     }
   }, [messages]);
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     if (!input.trim()) return;
 
@@ -40,7 +40,7 @@ export default function ChatPage() {
     setIsLoading(true);
 
     // Add an empty assistant message for real-time updates
-    let assistantMessage = { role: "assistant", content: "" };
+    const assistantMessage = { role: "assistant", content: "" };
     setMessages((prevMessages) => [...prevMessages, assistantMessage]);
 
     try {
@@ -66,9 +66,9 @@ export default function ChatPage() {
         buffer += decoder.decode(value, { stream: true });
 
         // Handle cases where the JSON chunk may be incomplete
-        let lastNewline = buffer.lastIndexOf("\n");
+        const lastNewline = buffer.lastIndexOf("\n");
         if (lastNewline !== -1) {
-          let validJSON = buffer.substring(0, lastNewline);
+          const validJSON = buffer.substring(0, lastNewline);
           buffer = buffer.substring(lastNewline + 1);
 
           validJSON.split("\n").forEach((line) => {
@@ -111,7 +111,7 @@ export default function ChatPage() {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <h1 className="text-xl font-bold">Padhai Whallah Chat</h1>
+            <h1 className="text-xl font-bold">Padhai Wala Chat</h1>
           </div>
           <div className="flex items-center gap-2">
             <FileText className="h-5 w-5 text-purple-500" />
@@ -205,5 +205,13 @@ export default function ChatPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChatScreen />
+    </Suspense>
   );
 }
